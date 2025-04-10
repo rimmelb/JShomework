@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="/styles_index.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/workouts">Training</a></li>
+        <li><a href="/goals">Goals</a></li>
+        <li><a href="/records">Records</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="training">
+      <h2>Today's Training</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Type of Exercise</th>
+            <th>Goal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Statikus példa; opcionálisan a workouts adatok is megjeleníthetők -->
+          <tr>
+            <td>Weightlifting</td>
+            <td>Bench Press</td>
+            <td>60 kg</td>
+          </tr>
+          <tr>
+            <td>Weightlifting</td>
+            <td>Squat</td>
+            <td>100 kg</td>
+          </tr>
+          <tr>
+            <td>Running</td>
+            <td>Distance</td>
+            <td>5 km</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    
+    <section class="stats">
+      <div class="stat">
+        <h3>Goals achieved</h3>
+        <div class="circle">
+          <span>72%</span>
+        </div>                
+      </div>
+      <div class="stat">
+        <h3>Trainings done</h3>
+        <div class="circle">
+          <span>72%</span>
+        </div>                
+      </div>
+    </section>
+  </main>
+</body>
+</html>

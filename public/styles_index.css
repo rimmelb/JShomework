@@ -1,0 +1,172 @@
+/* Alapstílusok */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+    color: #222;
+}
+
+/* Navigációs sáv */
+/* Navigációs sáv stílusa */
+nav {
+    background-color: #2d1c74;
+    padding: 40px;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 10px;
+}
+
+nav ul li a.active {
+    text-decoration: underline;
+    text-decoration-color: red;
+}
+
+/* Tartalom */
+main {
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    max-width: 1920px;
+    max-height: 1080px;
+    margin: auto;
+}
+
+.training {
+    width: 60%;
+    padding: 20px;
+    border-radius: 10px;
+    margin-left: 0;
+
+}
+
+.training h2 {
+    width: 900px;
+    color: #2d1c74;
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+
+/* Táblázat stílus */
+table {
+    width: 850px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: lighter;
+    margin-left: 0;
+}
+
+table, th, td {
+    padding: 20px;
+}
+
+th {
+    background-color: white;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #73747A;
+}
+
+td:nth-child(1), th:nth-child(1) {
+    text-align: start;
+}
+
+td:nth-child(2), th:nth-child(2) {
+    text-align: center;
+}
+
+td:nth-child(3), th:nth-child(3) {
+    text-align: right;
+}
+
+tr:nth-child(even) {
+    background-color: white;
+}
+
+tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+
+
+/* Statisztikai szekció */
+.stats {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 50px;
+}
+
+.stat h3 {
+    font-size: 40px;
+    font-weight: bold;
+    color: #2d1c74;
+    text-align: left;
+    margin: 100px;
+}
+
+.circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: conic-gradient(
+    #99ff66 72%,
+    #f2f2f2 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #222;
+    position: relative;
+}
+
+.circle::before {
+    content: "";
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    background: white;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.circle span {
+    z-index: 2;  /* Biztosítjuk, hogy a szám a legfelső rétegben legyen */
+    font-size: 15px;
+    font-weight: bold;
+    color: #222;
+    text-align: center;
+}
+
+

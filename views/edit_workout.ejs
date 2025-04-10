@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Training</title>
+  <link rel="stylesheet" href="/styles_workouts.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/workouts" class="active">Training</a></li>
+        <li><a href="/goals">Goals</a></li>
+        <li><a href="/records">Records</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <h2>Edit Training</h2>
+    <!-- A form tömbösített mezőkkel dolgozik, így több gyakorlatot is kezel -->
+    <form action="/workouts/<%= workout.id %>/edit" method="POST" id="trainingForm">
+      <label for="date">Date:</label>
+      <input type="date" id="date" name="date" value="<%= workout.date %>" required>
+      
+      <!-- Gyakorlatok konténer -->
+      <div id="exercisesContainer">
+        <% workout.exercises.forEach(function(ex){ %>
+          <div class="exercise-group">
+            <label>Exercise:</label>
+            <select name="exercise[]" class="exercise" required>
+              <option value="">-- Select Exercise --</option>
+              <option value="Weightlifting" <%= ex.exercise === "Weightlifting" ? "selected" : "" %>>Weightlifting</option>
+              <option value="Running" <%= ex.exercise === "Running" ? "selected" : "" %>>Running</option>
+              <option value="Cycling" <%= ex.exercise === "Cycling" ? "selected" : "" %>>Cycling</option>
+              <option value="Swimming" <%= ex.exercise === "Swimming" ? "selected" : "" %>>Swimming</option>
+            </select>
+            
+            <label>Exercise Type:</label>
+            <select name="exerciseType[]" class="exerciseType" required>
+              <option value="">-- Select Type --</option>
+              <% 
+                // Előre feltöltjük az exercise type opciókat, az adott gyakorlat alapján:
+                var exerciseTypes = {
+                  "Weightlifting": ["Bench Press", "Squat", "Deadlift", "Shoulder Press"],
+                  "Running": ["Distance", "Average Speed", "Time"],
+                  "Cycling": ["Distance", "Average Speed", "Time"],
+                  "Swimming": ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual Medley"]
+                };
+                var types = exerciseTypes[ex.exercise] || [];
+                types.forEach(function(type) { 
+              %>
+                <option value="<%= type %>" <%= ex.exerciseType === type ? "selected" : "" %>><%= type %></option>
+              <% }); %>
+            </select>
+            
+            <label>Goal:</label>
+            <input type="text" name="goal[]" class="goal" value="<%= ex.goal %>" required>
+            
+            <button type="button" class="removeExercise" onclick="removeExercise(this)">Remove</button>
+          </div>
+        <% }); %>
+      </div>
+      
+      <!-- Gomb további gyakorlat hozzáadásához -->
+      <button type="button" id="addExercise">Add Exercise</button>
+      <br><br>
+      <button type="submit">Save</button>
+    </form>
+    
+    <a href="/workouts">Back to the Training page</a>
+    
+    <script>
+      // Függvény a gyakorlat típusok frissítésére az adott select elem alapján
+      function updateExerciseTypes(exerciseSelect) {
+        var typeSelect = exerciseSelect.parentElement.querySelector('.exerciseType');
+        var exerciseTypes = {
+          "Weightlifting": ["Bench Press", "Squat", "Deadlift", "Shoulder Press"],
+          "Running": ["Distance", "Average Speed", "Time"],
+          "Cycling": ["Distance", "Average Speed", "Time"],
+          "Swimming": ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual Medley"]
+        };
+        typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+        var selected = exerciseSelect.value;
+        if (exerciseTypes[selected]) {
+          exerciseTypes[selected].forEach(function(type) {
+            var option = document.createElement("option");
+            option.value = type;
+            option.textContent = type;
+            typeSelect.appendChild(option);
+          });
+        }
+      }
+      
+      // Eseménykezelők beállítása a DOM tartalom betöltése után
+      document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.exercise').forEach(function(select) {
+          select.addEventListener('change', function() {
+            updateExerciseTypes(this);
+          });
+        });
+        
+        // Új gyakorlat hozzáadása
+        document.getElementById("addExercise").addEventListener("click", function() {
+          var container = document.getElementById("exercisesContainer");
+          // Klónozzuk az első exercise-groupot
+          var newGroup = container.firstElementChild.cloneNode(true);
+          // Töröljük az előző értékeket
+          newGroup.querySelector('.exercise').value = "";
+          newGroup.querySelector('.exerciseType').innerHTML = '<option value="">-- Select Type --</option>';
+          newGroup.querySelector('.goal').value = "";
+          container.appendChild(newGroup);
+          newGroup.querySelector('.exercise').addEventListener('change', function() {
+            updateExerciseTypes(this);
+          });
+        });
+      });
+      
+      // Függvény az exercise-group eltávolítására
+      function removeExercise(button) {
+        var group = button.parentElement;
+        var container = document.getElementById("exercisesContainer");
+        if (container.children.length > 1) {
+          container.removeChild(group);
+        } else {
+          alert("There must be at least one Exercise.");
+        }
+      }
+    </script>
+  </main>
+</body>
+</html>

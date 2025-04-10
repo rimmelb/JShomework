@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goals</title>
+  <link rel="stylesheet" href="/styles_goals.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/workouts">Training</a></li>
+        <li><a href="/goals" class="active">Goals</a></li>
+        <li><a href="/records">Records</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="goals">
+      <div class="goals-header">
+        <h2>Goals</h2>
+        <button class="add-goal" onclick="window.location.href='/goals/new'" >Add Goal</button>
+      </div>
+    <table>
+      <thead>
+        <tr>
+          <th>DAY</th>
+          <th>EXERCISE</th>
+          <th>EXERCISE TYPE</th>
+          <th>GOAL</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% goals.forEach(goal => { %>
+          <tr>
+            <td><%= goal.date %></td>
+            <td><%= goal.exercise %></td>
+            <td><%= goal.exerciseType %></td>
+            <td><%= goal.goal %></td>
+            <td>
+              <div class="actions">
+                <button class="modify" onclick="window.location.href='/goals/<%= goal.id %>/edit'">Modify</button>
+                <form action="/goals/<%= goal.id %>/delete" method="POST" style="display:inline;">
+                  <button type="submit" onclick="return confirm('Are you sure?');" class="delete">Delete</button>
+                </form>                  
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
