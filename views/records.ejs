@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Records</title>
-  <link rel="stylesheet" href="/styles_records.css">
+  <link rel="stylesheet" href="/css/styles_records.css">
 </head>
 <body>
   <header>
@@ -17,42 +17,42 @@
       </ul>
     </nav>
   </header>
-  
   <main>
     <section class="records">
       <div class="records-header">
         <h2>Records</h2>
         <button class="add-record" onclick="window.location.href='/records/new'">Add Record</button>
       </div>
-    <table>
-      <thead>
-        <tr>
-          <th>DAY</th>
+      <table>
+        <thead>
+          <tr>
+            <th>DAY</th>
             <th>EXERCISE</th>
             <th>EXERCISE TYPE</th>
             <th>RECORD</th>
             <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% records.forEach(record => { %>
-          <tr>
-            <td><%= record.date %></td>
-            <td><%= record.exercise %></td>
-            <td><%= record.exerciseType %></td>
-            <td><%= record.record %></td>
-            <td>
-              <div class="actions">
-                <button class="modify" onclick="window.location.href='/records/<%= record.id %>/edit'">Modify</button>
-                <form action="/records/<%= record.id %>/delete" method="POST" style="display:inline;">
-                  <button type="submit" onclick="return confirm('Are you sure?');" class="delete">Delete</button>
-                </form>                  
-              </div>
-            </td>
           </tr>
-        <% }); %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% records.forEach(record => { %>
+            <tr>
+              <td><%= record.date.toISOString().split('T')[0] %></td>
+              <td><%= record.exercise %></td>
+              <td><%= record.exerciseType %></td>
+              <td><%= record.record %></td>
+              <td>
+                <div class="actions">
+                  <button class="modify" onclick="window.location.href='/records/<%= record._id %>/edit'">Modify</button>
+                  <form action="/records/<%= record._id %>/delete" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Are you sure?');" class="delete">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </section>
   </main>
 </body>
 </html>

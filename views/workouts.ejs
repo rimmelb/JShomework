@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Training</title>
-  <link rel="stylesheet" href="/styles_workouts.css">
+  <link rel="stylesheet" href="/css/styles_workouts.css">
 </head>
 <body>
   <header>
@@ -17,38 +17,37 @@
       </ul>
     </nav>
   </header>
-  
   <main>
     <section class="trainings">
-    <div class="trainings-header">
-      <h2>Training</h2>
-      <button class="add-training" onclick="window.location.href='/workouts/new'">Add Training</button>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>DAY</th>
-          <th>EXERCISE</th>
-          <th>EXERCISE TYPE</th>
-          <th>GOAL</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% workouts.forEach(workout => { %>
+      <div class="trainings-header">
+        <h2>Training</h2>
+        <button class="add-training" onclick="window.location.href='/workouts/new'">Add Training</button>
+      </div>
+      <table>
+        <thead>
           <tr>
-            <td><span class="toggle-icon">▷</span></td>
-              <td><%= workout.date %></td>
+            <th></th>
+            <th>DAY</th>
+            <th>EXERCISE</th>
+            <th>EXERCISE TYPE</th>
+            <th>GOAL</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% workouts.forEach(workout => { %>
+            <tr>
+              <td><span class="toggle-icon">▶</span></td>
+              <td><%= workout.date.toISOString().split('T')[0] %></td>
               <td></td>
               <td></td>
               <td></td>
               <td>
                 <div class="actions">
-                  <button class="modify" onclick="window.location.href='/workouts/<%= workout.id %>/edit'">Modify</button>
-                  <form action="/workouts/<%= workout.id %>/delete" method="POST" style="display:inline;">
+                  <button class="modify" onclick="window.location.href='/workouts/<%= workout._id %>/edit'">Modify</button>
+                  <form action="/workouts/<%= workout._id %>/delete" method="POST" style="display:inline;">
                     <button type="submit" onclick="return confirm('Are you sure?');" class="delete">Delete</button>
-                  </form>                  
+                  </form>
                 </div>
               </td>
             </tr>
@@ -62,27 +61,11 @@
                 <td></td>
               </tr>
             <% }); %>
-              </ul>
-            </td>
-          </tr>
-        <% }); %>
-      </tbody>
-    </table>
+          <% }); %>
+        </tbody>
+      </table>
+    </section>
   </main>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      document.addEventListener("click", function (e) {
-        if (e.target.classList.contains("toggle-icon")) {
-          const row = e.target.closest("tr");
-          let nextRow = row.nextElementSibling;
-          while (nextRow && nextRow.classList.contains("hidden-row")) {
-            nextRow.style.display = nextRow.style.display === "none" ? "table-row" : "none";
-            nextRow = nextRow.nextElementSibling;
-          }
-          e.target.textContent = e.target.textContent === "▷" ? "▽" : "▷";
-        }
-      });
-    });
-  </script>  
+  <script src="/js/toggleRows.js"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
   <meta charset="UTF-8">
   <title>Add New Workout</title>
-  <link rel="stylesheet" href="/styles_workouts.css">
+  <link rel="stylesheet" href="/css/styles_workouts.css">
 </head>
 <body>
   <header>
@@ -16,106 +16,45 @@
       </ul>
     </nav>
   </header>
-  
   <main>
     <h2>Add New Workout</h2>
-    <form action="/workouts" method="POST" id="trainingForm">
+    <% if (errors.length > 0) { %>
+      <ul class="errors">
+        <% errors.forEach(function(error) { %>
+          <li><%= error.msg %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+    <form action="/workouts" method="POST">
       <label for="date">Date:</label>
-      <input type="date" id="date" name="date" required>
-      
-      <!-- Exercises container -->
-      <div id="exercisesContainer">
-        <div class="exercise-group">
+      <input type="date" id="date" name="date" value="<%= data.date || '' %>" required>
+      <br>
+      <h3>Exercises</h3>
+      <% data.exercises.forEach(function(ex, index) { %>
+        <fieldset>
+          <legend>Exercise Group <%= index + 1 %></legend>
           <label>Exercise:</label>
           <select name="exercise[]" class="exercise" required>
             <option value="">-- Select Exercise --</option>
-            <option value="Weightlifting">Weightlifting</option>
-            <option value="Running">Running</option>
-            <option value="Cycling">Cycling</option>
-            <option value="Swimming">Swimming</option>
+            <% exerciseOptions.forEach(function(opt) { %>
+              <option value="<%= opt %>" <%= ex.exercise === opt ? "selected" : "" %>><%= opt %></option>
+            <% }); %>
           </select>
-          
+          <br>
           <label>Exercise Type:</label>
-          <select name="exerciseType[]" class="exerciseType" required>
+          <select name="exerciseType[]" class="exerciseType" data-current="<%= ex.exerciseType || '' %>" required>
             <option value="">-- Select Type --</option>
           </select>
-          
+          <br>
           <label>Goal:</label>
-          <input type="text" name="goal[]" class="goal" required>
-          
-          <button type="button" class="removeExercise" onclick="removeExercise(this)">Remove</button>
-        </div>
-      </div>
-      
-      <!-- Button to add more exercises -->
-      <button type="button" id="addExercise">Add Exercise</button>
-      <br><br>
+          <input type="text" name="goal[]" value="<%= ex.goal || '' %>" required>
+        </fieldset>
+        <br>
+      <% }); %>
       <button type="submit">Save</button>
     </form>
-    
     <a href="/workouts">Back to List</a>
-    
-    <!-- Inline JavaScript for dynamic functionality -->
-    <script>
-      // Function to update exercise types based on the selected exercise
-      function updateExerciseTypes(exerciseSelect) {
-        var typeSelect = exerciseSelect.parentElement.querySelector('.exerciseType');
-        var exerciseTypes = {
-          "Weightlifting": ["Bench Press", "Squat", "Deadlift", "Shoulder Press"],
-          "Running": ["Distance", "Average Speed", "Time"],
-          "Cycling": ["Distance", "Average Speed", "Time"],
-          "Swimming": ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual Medley"]
-        };
-        // Set default option
-        typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
-        var selected = exerciseSelect.value;
-        if (exerciseTypes[selected]) {
-          exerciseTypes[selected].forEach(function(type) {
-            var option = document.createElement("option");
-            option.value = type;
-            option.textContent = type;
-            typeSelect.appendChild(option);
-          });
-        }
-      }
-      
-      // Event listeners setup when DOM content is loaded
-      document.addEventListener("DOMContentLoaded", function() {
-        // Set event for the first exercise select
-        document.querySelectorAll('.exercise').forEach(function(select) {
-          select.addEventListener('change', function() {
-            updateExerciseTypes(this);
-          });
-        });
-        
-        // Add new exercise
-        document.getElementById("addExercise").addEventListener("click", function() {
-          var container = document.getElementById("exercisesContainer");
-          // Clone the first exercise-group
-          var newGroup = container.firstElementChild.cloneNode(true);
-          // Clear previous values
-          newGroup.querySelector('.exercise').value = "";
-          newGroup.querySelector('.exerciseType').innerHTML = '<option value="">-- Select Type --</option>';
-          newGroup.querySelector('.goal').value = "";
-          container.appendChild(newGroup);
-          // Set event for the new select element
-          newGroup.querySelector('.exercise').addEventListener('change', function() {
-            updateExerciseTypes(this);
-          });
-        });
-      });
-      
-      // Function to remove an exercise-group
-      function removeExercise(button) {
-        var group = button.parentElement;
-        var container = document.getElementById("exercisesContainer");
-        if (container.children.length > 1) {
-          container.removeChild(group);
-        } else {
-          alert("At least one exercise is required.");
-        }
-      }
-    </script>
+    <script src="/js/exerciseTypes.js"></script>
   </main>
 </body>
 </html>

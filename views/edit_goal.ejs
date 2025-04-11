@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
   <meta charset="UTF-8">
   <title>Edit Goal</title>
-  <link rel="stylesheet" href="/styles_goals.css">
+  <link rel="stylesheet" href="/css/styles_goals.css">
 </head>
 <body>
   <header>
@@ -16,66 +16,45 @@
       </ul>
     </nav>
   </header>
-  
   <main>
     <h2>Edit Goal</h2>
-    <form action="/goals/<%= goal.id %>/edit" method="POST">
+    <% if (errors.length > 0) { %>
+      <ul class="errors">
+        <% errors.forEach(function(error){ %>
+          <li><%= error.msg %></li>
+        <% }); %>
+      </ul>
+    <% } %>
+    <form action="/goals/<%= goal._id %>/edit" method="POST">
       <label for="date">Date:</label>
-      <input type="date" id="date" name="date" value="<%= goal.date %>" required>
-      
+      <input type="date" name="date" id="date" value="<%= goal.date ? goal.date.toISOString().split('T')[0] : '' %>" required>
+      <br>
       <label for="exercise">Exercise:</label>
-      <select id="exercise" name="exercise" required>
-        <option value="">-- Select an exercise --</option>
+      <select name="exercise" id="exercise" required>
+        <option value="">-- Select Exercise --</option>
         <option value="Weightlifting" <%= goal.exercise === "Weightlifting" ? "selected" : "" %>>Weightlifting</option>
         <option value="Running" <%= goal.exercise === "Running" ? "selected" : "" %>>Running</option>
         <option value="Cycling" <%= goal.exercise === "Cycling" ? "selected" : "" %>>Cycling</option>
         <option value="Swimming" <%= goal.exercise === "Swimming" ? "selected" : "" %>>Swimming</option>
       </select>
-      
+      <br>
       <label for="exerciseType">Exercise Type:</label>
-      <select id="exerciseType" name="exerciseType" required>
-        <option value="">-- Select a type --</option>
+      <select name="exerciseType" id="exerciseType" required>
+        <option value="">-- Select Type --</option>
+        <% if (types) {
+          types.forEach(function(type){
+        %>
+          <option value="<%= type %>" <%= goal.exerciseType === type ? "selected" : "" %>><%= type %></option>
+        <% }); } %>
       </select>
-      
+      <br>
       <label for="goal">Goal:</label>
-      <input type="text" id="goal" name="goal" value="<%= goal.goal %>" required>
-      
+      <input type="text" name="goal" id="goal" value="<%= goal.goal %>" required>
+      <br>
       <button type="submit">Save</button>
     </form>
-    <a href="/goals">Back to Goals Page</a>
-    
-    <!-- Inline script for dynamically populating exercise types -->
-    <script>
-      function updateExerciseTypes() {
-        var exerciseSelect = document.getElementById('exercise');
-        var exerciseTypeSelect = document.getElementById('exerciseType');
-        var exerciseTypes = {
-          "Weightlifting": ["Bench Press", "Squat", "Deadlift", "Shoulder Press"],
-          "Running": ["Distance", "Average Speed", "Time"],
-          "Cycling": ["Distance", "Average Speed", "Time"],
-          "Swimming": ["Freestyle", "Backstroke", "Breaststroke", "Butterfly", "Individual Medley"]
-        };
-        // Set default option
-        exerciseTypeSelect.innerHTML = '<option value="">-- Select a type --</option>';
-        var selected = exerciseSelect.value;
-        if (exerciseTypes[selected]) {
-          exerciseTypes[selected].forEach(function(type) {
-            var option = document.createElement("option");
-            option.value = type;
-            option.textContent = type;
-            exerciseTypeSelect.appendChild(option);
-          });
-        }
-        // If a previously saved value exists, set it
-        var initialType = "<%= goal.exerciseType %>";
-        if (initialType) {
-          exerciseTypeSelect.value = initialType;
-        }
-      }
-      
-      document.getElementById('exercise').addEventListener('change', updateExerciseTypes);
-      document.addEventListener("DOMContentLoaded", updateExerciseTypes);
-    </script>
+    <a href="/goals">Back to Goals</a>
+    <script src="/js/exerciseTypes.js"></script>
   </main>
 </body>
 </html>
