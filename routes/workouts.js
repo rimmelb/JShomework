@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { workoutValidators } = require('./helpers/validators');
-const workoutController = require('../controllers/workoutController');
+const workoutController = require('./controllers/workoutController');
 
 router.get('/', workoutController.listWorkouts);
 

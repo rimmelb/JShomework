@@ -21,34 +21,35 @@
   <main>
     <section class="training">
       <h2>Today's Training</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Exercise</th>
-            <th>Type of Exercise</th>
-            <th>Goal</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Weightlifting</td>
-            <td>Bench Press</td>
-            <td>60 kg</td>
-          </tr>
-          <tr>
-            <td>Weightlifting</td>
-            <td>Squat</td>
-            <td>100 kg</td>
-          </tr>
-          <tr>
-            <td>Running</td>
-            <td>Distance</td>
-            <td>5 km</td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="trainingContainer">
+        <% if (todaysWorkouts.length > 0) { %>
+          <table id="trainingTable">
+            <thead>
+              <tr>
+                <th>Exercise</th>
+                <th>Type of Exercise</th>
+                <th>Goal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% todaysWorkouts.forEach(function(workout) { %>
+                <% workout.exercises.forEach(function(ex) { %>
+                  <tr>
+                    <td><%= ex.exercise %></td>
+                    <td><%= ex.exerciseType %></td>
+                    <td><%= ex.goal %></td>
+                  </tr>
+                <% }); %>
+              <% }); %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p id="noTrainingMsg">Nincs ma rögzített training.</p>
+        <% } %>
+      </div>
     </section>
     
+    <!-- stats szekció -->
     <section class="stats">
       <div class="stat">
         <h3>Goals achieved</h3>
@@ -64,5 +65,7 @@
       </div>
     </section>
   </main>
+  
+  <script>src="/js/todaysTrainingHandler.js"</script>
 </body>
 </html>

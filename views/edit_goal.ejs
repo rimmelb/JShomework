@@ -37,21 +37,15 @@
         <option value="Cycling" <%= goal.exercise === "Cycling" ? "selected" : "" %>>Cycling</option>
         <option value="Swimming" <%= goal.exercise === "Swimming" ? "selected" : "" %>>Swimming</option>
       </select>
-      <br>
       <label for="exerciseType">Exercise Type:</label>
-      <select name="exerciseType" id="exerciseType" required>
+      <select name="exerciseType" id="exerciseType" data-current="<%= goal.exerciseType %>" required>
         <option value="">-- Select Type --</option>
-        <% if (types) {
-          types.forEach(function(type){
-        %>
-          <option value="<%= type %>" <%= goal.exerciseType === type ? "selected" : "" %>><%= type %></option>
-        <% }); } %>
       </select>
       <br>
       <label for="goal">Goal:</label>
       <input type="text" name="goal" id="goal" value="<%= goal.goal %>" required>
       <br>
-      <button type="submit">Save</button>
+      <button type="submit" class="modify">Save</button>
     </form>
     <a href="/goals">Back to Goals</a>
     <script src="/js/exerciseTypes.js"></script>

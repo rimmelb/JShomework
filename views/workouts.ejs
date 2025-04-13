@@ -23,49 +23,48 @@
         <h2>Training</h2>
         <button class="add-training" onclick="window.location.href='/workouts/new'">Add Training</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>DAY</th>
-            <th>EXERCISE</th>
-            <th>EXERCISE TYPE</th>
-            <th>GOAL</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% workouts.forEach(workout => { %>
-            <tr>
-              <td><span class="toggle-icon">▶</span></td>
-              <td><%= workout.date.toISOString().split('T')[0] %></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                <div class="actions">
-                  <button class="modify" onclick="window.location.href='/workouts/<%= workout._id %>/edit'">Modify</button>
-                  <form action="/workouts/<%= workout._id %>/delete" method="POST" style="display:inline;">
-                    <button type="submit" onclick="return confirm('Are you sure?');" class="delete">Delete</button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-            <% workout.exercises.forEach(ex => { %>
-              <tr class="hidden-row">
-                <td></td>
-                <td></td>
-                <td><%= ex.exercise %></td>
-                <td><%= ex.exerciseType %></td>
-                <td><%= ex.goal %></td>
-                <td></td>
-              </tr>
-            <% }); %>
-          <% }); %>
-        </tbody>
-      </table>
+      
+      <% workouts.forEach(function(workout) { %>
+        <details>
+          <summary>
+            <span class="toggle-icon"></span>
+            <span class="summary-date">
+              <%= workout.date.toISOString().split('T')[0] %>
+            </span>
+            <span class="summary-actions">
+              <button class="modify" onclick="event.stopPropagation(); window.location.href='/workouts/<%= workout._id %>/edit'">
+                Modify
+              </button>
+              <form action="/workouts/<%= workout._id %>/delete" method="POST" style="display:inline;">
+                <button type="submit" onclick="event.stopPropagation(); return confirm('Are you sure?');" class="delete">
+                  Delete
+                </button>
+              </form>
+            </span>
+          </summary>
+          <div class="toggle-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Exercise</th>
+                  <th>Exercise Type</th>
+                  <th>Goal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% workout.exercises.forEach(function(ex) { %>
+                  <tr>
+                    <td><%= ex.exercise %></td>
+                    <td><%= ex.exerciseType %></td>
+                    <td><%= ex.goal %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      <% }); %>
     </section>
   </main>
-  <script src="/js/toggleRows.js"></script>
 </body>
 </html>

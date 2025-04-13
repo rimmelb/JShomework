@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { recordValidators } = require('./helpers/validators');
-const recordController = require('../controllers/recordController');
+const recordController = require('./controllers/recordController');
 
 router.get('/', recordController.listRecords);
 

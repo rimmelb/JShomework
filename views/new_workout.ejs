@@ -8,12 +8,6 @@
 <body>
   <header>
     <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/workouts" class="active">Training</a></li>
-        <li><a href="/goals">Goals</a></li>
-        <li><a href="/records">Records</a></li>
-      </ul>
     </nav>
   </header>
   <main>
@@ -25,36 +19,41 @@
         <% }); %>
       </ul>
     <% } %>
-    <form action="/workouts" method="POST">
+    <form action="/workouts" method="POST" id="workoutForm">
       <label for="date">Date:</label>
       <input type="date" id="date" name="date" value="<%= data.date || '' %>" required>
       <br>
       <h3>Exercises</h3>
-      <% data.exercises.forEach(function(ex, index) { %>
-        <fieldset>
-          <legend>Exercise Group <%= index + 1 %></legend>
-          <label>Exercise:</label>
-          <select name="exercise[]" class="exercise" required>
-            <option value="">-- Select Exercise --</option>
-            <% exerciseOptions.forEach(function(opt) { %>
-              <option value="<%= opt %>" <%= ex.exercise === opt ? "selected" : "" %>><%= opt %></option>
-            <% }); %>
-          </select>
+      <div id="exercisesContainer">
+        <% data.exercises.forEach(function(ex, index) { %>
+          <fieldset class="exerciseGroup">
+            <legend>Exercise Group <%= index + 1 %></legend>
+            <label>Exercise:</label>
+            <select name="exercise[]" class="exercise" required>
+              <option value="">-- Select Exercise --</option>
+              <% exerciseOptions.forEach(function(opt) { %>
+                <option value="<%= opt %>" <%= ex.exercise === opt ? "selected" : "" %>><%= opt %></option>
+              <% }); %>
+            </select>
+            <br>
+            <label>Exercise Type:</label>
+            <select name="exerciseType[]" class="exerciseType" data-current="<%= ex.exerciseType || '' %>" required>
+              <option value="">-- Select Type --</option>
+            </select>
+            <br>
+            <label>Goal:</label>
+            <input type="text" name="goal[]" value="<%= ex.goal || '' %>" required>
+          </fieldset>
           <br>
-          <label>Exercise Type:</label>
-          <select name="exerciseType[]" class="exerciseType" data-current="<%= ex.exerciseType || '' %>" required>
-            <option value="">-- Select Type --</option>
-          </select>
-          <br>
-          <label>Goal:</label>
-          <input type="text" name="goal[]" value="<%= ex.goal || '' %>" required>
-        </fieldset>
-        <br>
-      <% }); %>
-      <button type="submit">Save</button>
+        <% }); %>
+      </div>
+      <button type="button" class="modify" id="addExerciseBtn">Add Exercise</button>
+      <br><br>
+      <button type="submit" class="modify">Save</button>
     </form>
     <a href="/workouts">Back to List</a>
     <script src="/js/exerciseTypes.js"></script>
+    <script src="/js/workoutForm.js"></script>
   </main>
 </body>
 </html>

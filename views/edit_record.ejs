@@ -39,17 +39,14 @@
       </select>
       <br>
       <label for="exerciseType">Exercise Type:</label>
-      <select id="exerciseType" name="exerciseType" required>
-        <option value="">-- Select a type --</option>
-        <% types.forEach(function(type) { %>
-          <option value="<%= type %>" <%= record.exerciseType === type ? "selected" : "" %>><%= type %></option>
-        <% }); %>
+      <select name="exerciseType" id="exerciseType" data-current="<%= record.exerciseType %>" required>
+        <option value="">-- Select Type --</option>
       </select>
       <br>
       <label for="record">Record:</label>
       <input type="text" id="record" name="record" value="<%= record.record %>" required>
       <br>
-      <button type="submit">Save</button>
+      <button type="submit" class="modify">Save</button>
     </form>
     <a href="/records">Back to Records Page</a>
     <script src="/js/exerciseTypes.js"></script>

@@ -25,36 +25,45 @@
         <% }); %>
       </ul>
     <% } %>
-    <form action="/workouts/<%= workout._id %>/edit" method="POST">
+    <form action="/workouts/<%= workout._id %>/edit" method="POST" id="workoutForm">
       <label for="date">Date:</label>
       <input type="date" id="date" name="date" value="<%= workout.date ? workout.date.toISOString().split('T')[0] : '' %>" required>
       <br>
       <h3>Exercises</h3>
-      <% workout.exercises.forEach(function(ex, index) { %>
-        <fieldset>
-          <legend>Exercise Group <%= index + 1 %></legend>
-          <label>Exercise:</label>
-          <select name="exercise[]" class="exercise" required>
-            <option value="">-- Select Exercise --</option>
-            <% exerciseOptions.forEach(function(opt) { %>
-              <option value="<%= opt %>" <%= ex.exercise === opt ? "selected" : "" %>><%= opt %></option>
-            <% }); %>
-          </select>
+      <div id="exercisesContainer">
+        <% workout.exercises.forEach(function(ex, index) { %>
+          <fieldset class="exerciseGroup">
+            <legend>Exercise Group <%= index + 1 %></legend>
+            <label>Exercise:</label>
+            <select name="exercise[]" class="exercise" required>
+              <option value="">-- Select Exercise --</option>
+              <% exerciseOptions.forEach(function(opt) { %>
+                <option value="<%= opt %>" <%= ex.exercise === opt ? "selected" : "" %>><%= opt %></option>
+              <% }); %>
+            </select>
+            <br>
+            <label>Exercise Type:</label>
+            <select name="exerciseType[]" class="exerciseType" data-current="<%= ex.exerciseType || '' %>" required>
+              <option value="">-- Select Type --</option>
+            </select>
+            <br>
+            <label>Goal:</label>
+            <input type="text" name="goal[]" value="<%= ex.goal %>" required>
+          </fieldset>
           <br>
-          <label>Exercise Type:</label>
-          <select name="exerciseType[]" class="exerciseType" data-current="<%= ex.exerciseType %>" required>
-            <option value="">-- Select Type --</option>
-          </select>
-          <br>
-          <label>Goal:</label>
-          <input type="text" name="goal[]" value="<%= ex.goal %>" required>
-        </fieldset>
-        <br>
-      <% }); %>
-      <button type="submit">Save</button>
+        <% }); %>
+      </div>
+      <button type="button" id="addExerciseBtn">Add Exercise</button>
+      <br><br>
+      <!-- Új mező a training befejezésének jelzésére -->
+      <label for="completed">Completed:</label>
+      <input type="checkbox" id="completed" name="completed" <%= workout.completed ? "checked" : "" %> >
+      <br><br>
+      <button type="submit" class="modify">Save</button>
     </form>
     <a href="/workouts">Back to Workouts</a>
     <script src="/js/exerciseTypes.js"></script>
+    <script src="/js/workoutForm.js"></script>
   </main>
 </body>
 </html>

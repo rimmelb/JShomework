@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { goalValidators } = require('./helpers/validators');
-const goalController = require('../controllers/goalController');
+const goalController = require('./controllers/goalController');
 
 router.get('/', goalController.listGoals);
 

@@ -22,10 +22,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 const goalsRouter = require('./routes/goals');
 const recordsRouter = require('./routes/records');
 const workoutsRouter = require('./routes/workouts');
+const homeRouter = require('./routes/home');
 
 app.use('/goals', goalsRouter);
 app.use('/records', recordsRouter);
 app.use('/workouts', workoutsRouter);
+app.use('/home', homeRouter);
+
+app.get('/', (req, res) => {
+  res.redirect('/home');
+});
 
 // Hibakezelő middleware
 app.use((err, req, res, next) => {

@@ -1,7 +1,7 @@
 // controllers/goalController.js
-const Goal = require('../models/goal');
+const Goal = require('../../models/goal');
+const Workout = require('../../models/workout');
 const { EXERCISE_TYPES, EXERCISE_OPTIONS } = require('../helpers/constants');
-const { findAndRender, updateAndRedirect } = require('../helpers/crud');
 
 /**
  * Listázza a célokat.
@@ -27,16 +27,32 @@ function newGoalForm(req, res) {
  */
 async function createGoal(req, res, next) {
   try {
-    // "refresh" esetén csak újrarendereljük az űrlapot
     if (req.body.action === 'refresh') {
       return res.render('new_goal', { data: req.body, errors: [], EXERCISE_TYPES, EXERCISE_OPTIONS });
     }
     const errors = require('express-validator').validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).render('new_goal', { data: req.body, errors: errors.array(), EXERCISE_TYPES, EXERCISE_OPTIONS });
+      return res.status(400).render('new_goal', { data: req.body, errors: errors.array()});
     }
     const newGoal = new Goal(req.body);
     await newGoal.save();
+    const goalDate = new Date(newGoal.date);
+    
+    const workout = await Workout.findOne({
+      date: {
+        $gte: new Date(goalDate.getFullYear(), goalDate.getMonth(), goalDate.getDate()),
+        $lt: new Date(goalDate.getFullYear(), goalDate.getMonth(), goalDate.getDate() + 1)
+      }
+    });
+
+    if (workout) {
+      workout.exercises.push({
+        exercise: newGoal.exercise,
+        exerciseType: newGoal.exerciseType,
+        goal: newGoal.goal
+      });
+      await workout.save();
+    }
     res.redirect('/goals');
   } catch (err) {
     next(err);
@@ -50,7 +66,8 @@ async function editGoalForm(req, res, next) {
   try {
     const goal = await Goal.findById(req.params.id);
     if (!goal) return res.status(404).send('A cél nem található');
-    res.render('edit_goal', { goal, errors: [], EXERCISE_TYPES, EXERCISE_OPTIONS });
+    // Válassz ki típusokat a goal.exercise alapján.
+    res.render('edit_goal', { goal, errors: [], EXERCISE_TYPES, EXERCISE_OPTIONS});
   } catch (err) {
     next(err);
   }

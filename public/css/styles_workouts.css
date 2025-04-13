@@ -1,4 +1,6 @@
-/* Alapstílusok */
+/* styles_workouts.css */
+
+/* Általános stílusok */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,8 +9,7 @@ body {
     color: #222;
 }
 
-/* Navigációs sáv */
-/* Navigációs sáv stílusa */
+/* Navigációs sáv stílusai */
 nav {
     background-color: #2d1c74;
     padding: 40px;
@@ -24,10 +25,6 @@ nav ul {
     gap: 40px;
 }
 
-nav ul li {
-    display: inline;
-}
-
 nav ul li a {
     color: white;
     text-decoration: none;
@@ -40,14 +37,14 @@ nav ul li a.active {
     text-decoration-color: red;
 }
 
-/* Tartalom */
+/* Fő tartalom stílusai */
 main {
     padding: 60px;
     max-width: 1920px;
-    max-height: 1080px;
     margin: auto;
 }
 
+/* Trainings szekció */
 .trainings {
     background: white;
     padding: 50px;
@@ -70,7 +67,6 @@ main {
 
 .add-training {
     background-color: rgb(226, 42, 97);
-    align-content: flex-end;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -85,62 +81,60 @@ main {
     background-color: #3a2a8a;
 }
 
-/* Táblázat stílus */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 18px;
-    margin-top: 50px;
+/* details/summary alapú lenyitható tartalom */
+details {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
 }
 
-table, th, td {
-    padding: 15px;
-    text-align: left;
-}
-
-th {
-    text-transform: uppercase;
-    font-weight: bold;
-    background-color: white;
-}
-
-tr {
-    background-color: white;
-}
-
-td:nth-child(4), th:nth-child(4) {
-    text-align: left;
-}
-
-td:nth-child(5), th:nth-child(5) {
-    text-align: right;
-}
-
-
-/* Rejtett sorok */
-.hidden-row {
-    background-color: #f2f2f2;
-}
-
-/* Ikon stílusa */
-.toggle-icon {
-    cursor: pointer;
-    font-size: 20px;
-}
-
-/* Gombok stílusa */
-.actions {
+/* A summary elemet flex konténerként állítjuk be,
+   így a bal oldalon a toggle ikon, középen a dátum, és jobb oldalon a gombok jelennek meg */
+summary {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    list-style: none;
+    padding: 0 5px;
 }
 
-/* Gombok stílusa */
-.modify, .delete {
+/* Az alapértelmezett nyíl eltüntetése */
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* A toggle ikon pseudó-elemmel: jobbra mutató nyíl alapértelmezésben */
+.toggle-icon::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.2s ease, content 0.2s ease;
+}
+
+/* Ha a details nyitva van, módosítsuk az ikont lefelé mutatóra */
+details[open] summary .toggle-icon::before {
+    content: "▼";
+}
+
+/* A summary dátum rész stílusa */
+.summary-date {
+    flex-grow: 1;
+}
+
+/* A summary jobb oldali akciógombjai */
+.summary-actions button {
     border: none;
     padding: 8px 16px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 12px;
     cursor: pointer;
+    margin-left: 5px;
 }
 
 .modify {
@@ -153,7 +147,7 @@ td:nth-child(5), th:nth-child(5) {
 }
 
 .delete {
-    background-color: rgb(226, 42, 97);;
+    background-color: rgb(226, 42, 97);
     color: white;
 }
 
@@ -161,50 +155,21 @@ td:nth-child(5), th:nth-child(5) {
     background-color: #45a049;
 }
 
-.modal {
-    display: none; /* Alapértelmezés szerint rejtett */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
+/* A lenyitható tartalom belső stílusai */
+.toggle-content table {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    justify-content: center;
-    align-items: center;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 800px;
-    text-align: center;
-    position: relative;
+.toggle-content table th,
+.toggle-content table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
 }
 
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 24px;
-    cursor: pointer;
+.toggle-content table th {
+    text-transform: uppercase;
+    font-weight: bold;
 }
-
-.hidden-row {
-    display: none;
-  }
-
-  input[type="checkbox"] {
-    display: none;
-  }
-
-  input[type="checkbox"]:checked ~ .hidden-row {
-    display: table-row;
-  }
-
-  .toggle-label {
-    cursor: pointer;
-    font-size: 16px;
-    color: #2d1c74;
-  }
