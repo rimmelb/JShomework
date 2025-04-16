@@ -45,7 +45,7 @@ async function fetchTodaysWorkouts() {
     }
   }
 
-  // Polling: pl. 30 másodpercenként frissítjük az adatokat
+  // Polling: 30 másodpercenként frissítjük az adatokat
   setInterval(updateTrainingTable, 30000);
   // Az oldal betöltésekor is frissítjük a táblázatot:
   updateTrainingTable();

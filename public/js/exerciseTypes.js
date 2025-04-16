@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   function updateWorkoutTypes(exSelect, exTypeSelect) {
-    console.log("updateWorkoutTypes called");
     const selected = exSelect.value;
     exTypeSelect.innerHTML = '<option value="">-- Select Type --</option>';
     if (exerciseTypes[selected]) {
@@ -22,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
       const current = exTypeSelect.getAttribute("data-current");
       if (current) {
         exTypeSelect.value = current;
-        console.log("Setting current type:", current);
       }
     } else {
       console.log("No exercise types found for", selected);
@@ -47,12 +45,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function initMainExerciseFunctions() {
-    console.log("initMainExerciseFunctions called");
     const mainExerciseSelect = document.getElementById("exercise");
     const mainExerciseTypeSelect = document.getElementById("exerciseType");
     if (mainExerciseSelect && mainExerciseTypeSelect) {
       mainExerciseSelect.addEventListener("change", function() {
-        console.log("Main exercise changed to:", mainExerciseSelect.value);
         const selected = mainExerciseSelect.value;
         mainExerciseTypeSelect.innerHTML = '<option value="">-- Select Type --</option>';
         if (exerciseTypes[selected]) {
@@ -65,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function() {
           const current = mainExerciseTypeSelect.getAttribute("data-current");
           if (current) {
             mainExerciseTypeSelect.value = current;
-            console.log("Main set current to:", current);
           }
         }
       });

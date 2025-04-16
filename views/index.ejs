@@ -50,17 +50,18 @@
     </section>
     
     <!-- stats szekció -->
+    <!-- stats szekció az index.ejs-ben -->
     <section class="stats">
       <div class="stat">
         <h3>Goals achieved</h3>
-        <div class="circle">
-          <span>72%</span>
+        <div class="circle" style="background: conic-gradient(#99ff66 0% <%= goalsAchieved %>%, #f2f2f2 <%= goalsAchieved %>% 100%);">
+          <span><%= goalsAchieved %>%</span>
         </div>                
       </div>
       <div class="stat">
         <h3>Trainings done</h3>
-        <div class="circle">
-          <span>72%</span>
+        <div class="circle" style="background: conic-gradient(#99ff66 0% <%= trainingsDone  %>%, #f2f2f2 <%= trainingsDone %>% 100%);">
+          <span><%= trainingsDone %>%</span>
         </div>                
       </div>
     </section>

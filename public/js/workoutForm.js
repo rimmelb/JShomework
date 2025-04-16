@@ -69,8 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Kötjük az exercise select change eseményét a típusok dinamikus feltöltéséhez
       exerciseSelect.addEventListener('change', function() {
-        // Ha az exerciseTypes.js-ben definiált updateWorkoutTypes függvény elérhető,
-        // használjuk azt a típusok frissítésére.
         if (typeof updateWorkoutTypes === 'function') {
           updateWorkoutTypes(exerciseSelect, typeSelect);
         }

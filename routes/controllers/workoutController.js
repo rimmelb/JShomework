@@ -20,7 +20,6 @@ async function listWorkouts(req, res, next) {
  * Új workout űrlap megjelenítése.
  */
 function newWorkoutForm(req, res) {
-  // Ha nincs adat, inicializálunk egy üres exercise csoportot
   const data = { date: "", exercises: [{ exercise: "", exerciseType: "", goal: "" }] };
   res.render('new_workout', { data, errors: [], exerciseOptions: EXERCISE_OPTIONS });
 }
