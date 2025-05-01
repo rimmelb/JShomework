@@ -1,7 +1,6 @@
 // controllers/workoutController.js
 const Workout = require('../../models/workout');
 const Goal = require('../../models/goal');
-const Record = require('../../models/record');
 const { EXERCISE_OPTIONS } = require('../helpers/constants');
 
 /**
@@ -28,6 +27,20 @@ function newWorkoutForm(req, res) {
  * Új workout mentése.
  */
 async function createWorkout(req, res, next) {
+
+  try {
+    // 1) Duplikátum-ellenőrzés
+    const exists = await Workout.findOne({ date: req.body.date });
+    if (exists) {
+      return res.status(400).render('new_workout', {
+        data: req.body,
+        errors: [{ msg: 'Már rögzítettél edzést erre a napra.' }],
+        exerciseOptions: EXERCISE_OPTIONS
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
   try {
     const errors = require('express-validator').validationResult(req);
     if (req.body.action === 'refresh') {
@@ -98,6 +111,24 @@ async function updateWorkout(req, res, next) {
   try {
     let workout = await Workout.findById(req.params.id);
     if (!workout) return res.status(404).send('A workout nem található');
+
+    const origDateStr = workout.date.toISOString().split('T')[0];
+    const newDate = req.body.date;
+    // csak akkor ellenőrzünk, ha a dátum változott
+    if (String(workout.date.toISOString().split('T')[0]) !== newDate) {
+      const conflict = await Workout.findOne({
+        date: newDate,
+        _id: { $ne: workout._id }
+      });
+      if (conflict) {
+        const updatedData = { ...workout.toObject(), ...req.body };
+        return res.status(400).render('edit_workout', {
+          workout: updatedData,
+          errors: [{ msg: 'Már van edzés erre a napra.' }],
+          exerciseOptions: EXERCISE_OPTIONS
+        });
+      }
+    }
     if (req.body.action === 'refresh') {
       const updatedWorkout = { ...workout.toObject(), ...req.body };
       return res.render('edit_workout', { workout: updatedWorkout, errors: [], exerciseOptions: EXERCISE_OPTIONS });
@@ -128,6 +159,21 @@ async function updateWorkout(req, res, next) {
     workout.completed = (req.body.completed === 'on' ? true : false);
 
     await workout.save();
+
+    // 7) Régi célok teljes törlése az eredeti dátumra
+    await Goal.deleteMany({ date: new Date(origDateStr) });
+
+    // 8) Új célok beszúrása a frissített exercises tömbből
+    for (const ex of workout.exercises) {
+      if (ex.goal && ex.goal.trim() !== '') {
+        await new Goal({
+          date:         workout.date,
+          exercise:     ex.exercise,
+          exerciseType: ex.exerciseType,
+          goal:         ex.goal
+        }).save();
+      }
+    }
 
     if (workout.completed) {
       const Record = require('../../models/record');
@@ -174,16 +220,32 @@ async function updateWorkout(req, res, next) {
 }
 
 /**
- * Workout törlése.
+ * Workout és a hozzá kapcsolódó Goalok törlése.
  */
 async function deleteWorkout(req, res, next) {
   try {
+    const workout = await Workout.findById(req.params.id);
+    if (!workout) {
+      return res.status(404).send('A workout nem található');
+    }
+    const exercises = workout.exercises.map(ex => ({
+      exercise: ex.exercise,
+      exerciseType: ex.exerciseType
+    }));
+    for (const ex of exercises) {
+      await Goal.deleteMany({
+        date: workout.date,
+        exercise: ex.exercise,
+        exerciseType: ex.exerciseType
+      });
+    }
     await Workout.findByIdAndDelete(req.params.id);
     res.redirect('/workouts');
   } catch (err) {
     next(err);
   }
 }
+
 
 module.exports = {
   listWorkouts,

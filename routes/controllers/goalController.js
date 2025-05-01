@@ -78,18 +78,49 @@ async function editGoalForm(req, res, next) {
  */
 async function updateGoal(req, res, next) {
   try {
-    let goal = await Goal.findById(req.params.id);
+    // 1) Lekérjük a korábbi célt
+    const goal = await Goal.findById(req.params.id);
     if (!goal) return res.status(404).send('A cél nem található');
-    if (req.body.action === 'refresh') {
-      // Újrarendereljük a szerkesztő oldalt a frissített adatokkal.
-      return res.render('edit_goal', { goal: { ...goal.toObject(), ...req.body }, errors: [], EXERCISE_TYPES, EXERCISE_OPTIONS });
-    }
-    const errors = require('express-validator').validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).render('edit_goal', { goal: { ...goal.toObject(), ...req.body }, errors: errors.array(), EXERCISE_TYPES, EXERCISE_OPTIONS });
-    }
-    Object.assign(goal, req.body);
+
+    // Eredeti értékek
+    const origDate        = goal.date;
+    const origExercise    = goal.exercise;
+    const origExerciseType= goal.exerciseType;
+    const origGoalValue   = goal.goal;
+
+    // 2) Frissítjük a Goal dokumentumot
+    goal.exercise     = req.body.exercise;
+    goal.exerciseType = req.body.exerciseType;
+    goal.date         = req.body.date;
+    goal.goal         = req.body.goal;
     await goal.save();
+
+    // 3) A hozzá tartozó Workout frissítése, ha létezik
+    const workout = await Workout.findOne({
+      date: {
+        $gte: new Date(origDate.setHours(0,0,0,0)),
+        $lt:  new Date(origDate.setHours(24,0,0,0))
+      }
+    });
+
+    if (workout) {
+      let changed = false;
+      workout.exercises = workout.exercises.map(ex => {
+        if (
+          ex.exercise      === origExercise &&
+          ex.exerciseType  === origExerciseType &&
+          ex.goal          === origGoalValue
+        ) {
+          ex.exercise     = req.body.exercise;
+          ex.exerciseType = req.body.exerciseType;
+          ex.goal         = req.body.goal;
+          changed = true;
+        }
+        return ex;
+      });
+      if (changed) await workout.save();
+    }
+
     res.redirect('/goals');
   } catch (err) {
     next(err);
@@ -101,7 +132,37 @@ async function updateGoal(req, res, next) {
  */
 async function deleteGoal(req, res, next) {
   try {
-    await Goal.findByIdAndDelete(req.params.id);
+    // 1) Lekérjük a törlendő célt
+    const goal = await Goal.findById(req.params.id);
+    if (!goal) return res.status(404).send('A cél nem található');
+
+    const { date, exercise, exerciseType, goal: goalValue } = goal.toObject();
+
+    // 2) Töröljük a Goal dokumentumot
+    await goal.remove();
+
+    // 3) A hozzá tartozó Workout esetén kiszűrjük a megfelelő elemet
+    const workout = await Workout.findOne({
+      date: {
+        $gte: new Date(date.setHours(0,0,0,0)),
+        $lt:  new Date(date.setHours(24,0,0,0))
+      }
+    });
+
+    if (workout) {
+      const filtered = workout.exercises.filter(ex =>
+        !(
+          ex.exercise     === exercise &&
+          ex.exerciseType === exerciseType &&
+          ex.goal         === goalValue
+        )
+      );
+      if (filtered.length !== workout.exercises.length) {
+        workout.exercises = filtered;
+        await workout.save();
+      }
+    }
+
     res.redirect('/goals');
   } catch (err) {
     next(err);
